@@ -11,6 +11,7 @@ import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.exception.MemberStopUserException;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
+import com.zerobase.fastlms.member.repository.LoginHistoryRepository;
 import com.zerobase.fastlms.member.repository.MemberRepository;
 import com.zerobase.fastlms.member.service.MemberService;
 import com.zerobase.fastlms.util.PasswordUtils;
@@ -39,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
     private final MailComponents mailComponents;
     
     private final MemberMapper memberMapper;
+    private final LoginHistoryRepository loginHistoryRepository;
     
     /**
      * 회원 가입
@@ -153,8 +155,10 @@ public class MemberServiceImpl implements MemberService {
         }
         
         Member member = optionalMember.get();
+        MemberDto dto = MemberDto.of(member);
+
         
-        return MemberDto.of(member);
+        return dto;
     }
     
     @Override
@@ -264,6 +268,7 @@ public class MemberServiceImpl implements MemberService {
         member.setZipcode("");
         member.setAddr("");
         member.setAddrDetail("");
+        member.setLastLoginDt(null);
         memberRepository.save(member);
         
         return new ServiceResult();
